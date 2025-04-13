@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard PL Dofus</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  </head>
+  <body>
+    <div id="taskbar">
+      <button class="btn" onclick="openWindow('messages')">
+        <i class="fas fa-scroll"></i> Messages
+      </button>
+      <button class="btn" onclick="openWindow('clients')">
+        <i class="fas fa-users"></i> Clients
+      </button>
+      <!-- <button class="btn" onclick="openWindow('groupe')">🛡️ Groupe</button> -->
+      <!-- <button class="btn" onclick="openWindow('stats')">💰 Stats</button> -->
+      <button class="btn" onclick="openWindow('memo')">
+        <i class="fas fa-note-sticky"></i> Mémo
+      </button>
+      <button class="btn" onclick="openWindow('settings')">
+        <i class="fas fa-gear"></i> Paramètres
+      </button>
+    </div>
+
+    <!-- Fenêtre Messages rapides -->
+    <div
+      class="window"
+      id="window-messages"
+      style="top: 100px; left: 100px; width: 400px"
+    >
+      <div class="window-header" onmousedown="startDrag(event, 'messages')">
+        <span class="title"><i class="fas fa-scroll"></i> Messages rapides</span>
+        <div class="controls">
+          <button class="btn" onclick="minimizeWindow('messages')">
+            <i class="fas fa-minus"></i>
+          </button>
+          <button class="btn" onclick="closeWindow('messages')">
+            <i class="fas fa-xmark"></i>
+          </button>
+        </div>
+      </div>
+      <div class="window-body message-window">
+        <div class="message-form">
+          <div class="input-group">
+            <div class="input-field">
+              <i class="fas fa-dungeon"></i>
+              <input
+                type="text"
+                id="input-donjon"
+                placeholder="Nom du donjon"
+              />
+            </div>
+
+            <div class="input-field">
+              <i class="fas fa-map-marker-alt"></i>
+              <input
+                type="text"
+                id="input-salle"
+                placeholder="Salle (ex: B6)"
+              />
+            </div>
+          </div>
+
+          <div class="input-group">
+            <div class="input-field">
+              <i class="fas fa-coins"></i>
+              <input
+                type="number"
+                id="input-prix"
+                placeholder="Prix/combat (k)"
+              />
+            </div>
+
+            <div class="input-field">
+              <i class="fas fa-sword"></i>
+              <input
+                type="number"
+                id="input-combats"
+                placeholder="Nb combats"
+              />
+            </div>
+          </div>
+
+          <div class="input-field full-width">
+            <i class="fas fa-users"></i>
+            <input
+              type="text"
+              id="input-places"
+              placeholder="Places (ex: 3/4)"
+            />
+          </div>
+        </div>
+
+        <div class="message-preview">
+          <div class="preview-header">
+            <i class="fas fa-eye"></i>
+            <span>Aperçu du message</span>
+          </div>
+          <div id="message-preview-content">
+            Le message de recrutement apparaîtra ici...
+          </div>
+        </div>
+
+        <div class="message-actions">
+          <button
+            id="btn-recrutement"
+            class="btn primary-btn"
+            onclick="copyMessage('recrutement')"
+          >
+            <i class="fas fa-bullhorn"></i> Copier le recrutement
+          </button>
+          <div class="secondary-actions">
+            <button class="btn" onclick="copyMessage('info')">
+              <i class="fas fa-info-circle"></i> Infos
+            </button>
+            <button id="btn-go" class="btn" onclick="copyMessage('go')">
+              <i class="fas fa-flag-checkered"></i> Go
+            </button>
+          </div>
+        </div>
+      </div>
+      <div
+        class="resize-handle"
+        onmousedown="startResize(event, 'messages')"
+      ></div>
+    </div>
+
+    <!-- Fenêtre Clients (mode tableau) -->
+<div class="window" id="window-clients" style="top: 25px; left: 600px; width: 650px;">
+  <div class="window-header" onmousedown="startDrag(event, 'clients')">
+    <span class="title"><i class="fas fa-users"></i> Clients en cours</span>
+    <div class="controls">
+      <button class="btn" onclick="minimizeWindow('clients')">
+        <i class="fas fa-minus"></i>
+      </button>
+      <button class="btn" onclick="closeWindow('clients')">
+        <i class="fas fa-xmark"></i>
+      </button>
+    </div>
+  </div>
+  <div class="window-body">
+    <form onsubmit="addClient(event)" style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px;">
+      <input type="text" id="client-name" placeholder="Pseudo du client" required />
+      <input type="number" id="client-combats" placeholder="Combats restants" min="1" required value="1" />
+      <label><input type="checkbox" id="client-paid" /> A payé</label>
+      <button class="btn" type="submit">Ajouter</button>
+    </form>
+
+    <button class="btn" onclick="decrementAllCombats()" style="margin-bottom: 10px;">
+      ➖ Retirer 1 combat à tous
+    </button>
+
+    <table class="client-table">
+      <thead>
+        <tr>
+          <th>Pseudo</th>
+          <th>Combats</th>
+          <th>-</th>
+          <th>+</th>
+          <th>Messages</th>
+          <th>Payé</th>
+          <th>Supprimer</th>
+        </tr>
+      </thead>
+      <tbody id="client-list">
+        <!-- les clients seront injectés ici via JS -->
+      </tbody>
+    </table>
+  </div>
+  <div class="resize-handle" onmousedown="startResize(event, 'clients')"></div>
+</div>
+
+    <!-- Fenêtre Mémo -->
+    <div
+      class="window"
+      id="window-memo"
+      style="top: 200px; left: 600px; width: 300px; height: 250px"
+    >
+      <div class="window-header" onmousedown="startDrag(event, 'memo')">
+        <span class="title">🖋️ Mémo</span>
+        <div class="controls">
+          <button class="btn" onclick="minimizeWindow('memo')">➖</button>
+          <button class="btn" onclick="closeWindow('memo')">❌</button>
+        </div>
+      </div>
+      <div class="window-body" style="height: calc(100% - 36px); padding: 0">
+        <textarea
+          id="memo-text"
+          style="
+            width: 100%;
+            height: 100%;
+            border: none;
+            padding: 10px;
+            resize: none;
+            font-family: sans-serif;
+          "
+        ></textarea>
+      </div>
+      <div class="resize-handle" onmousedown="startResize(event, 'memo')"></div>
+    </div>
+
+    <!-- Fenêtre Stats -->
+    <div
+      class="window"
+      id="window-stats"
+      style="top: 250px; left: 700px; width: 300px"
+    >
+      <div class="window-header" onmousedown="startDrag(event, 'stats')">
+        <span class="title">💰 Statistiques (beta)</span>
+        <div class="controls">
+          <button class="btn" onclick="minimizeWindow('stats')">➖</button>
+          <button class="btn" onclick="closeWindow('stats')">❌</button>
+        </div>
+      </div>
+      <div class="window-body" id="stats-content">
+        <p>
+          <strong>Clients actifs :</strong> <span id="stat-clients">0</span>
+        </p>
+        <p>
+          <strong>Combats restants :</strong> <span id="stat-combats">0</span>
+        </p>
+        <p><strong>Kamas restants :</strong> <span id="stat-kamas">0</span>k</p>
+        <p><strong>Kamas encaissés :</strong> <span id="stat-paid">0</span>k</p>
+      </div>
+      <div
+        class="resize-handle"
+        onmousedown="startResize(event, 'stats')"
+      ></div>
+    </div>
+
+    <div id="enutrof">
+      <img
+        src="https://wiki-dofus.eu/_images/d/dc/Enutrof-M-big-trans.png"
+        alt="Enutrof"
+      />
+      <div id="enutrof-bulle"></div>
+    </div>
+
+    <!-- Fenêtre Paramètres -->
+    <div
+      class="window"
+      id="window-settings"
+      style="top: 200px; left: 800px; width: 320px"
+    >
+      <div class="window-header" onmousedown="startDrag(event, 'settings')">
+        <span class="title">⚙️ Paramètres</span>
+        <div class="controls">
+          <button class="btn" onclick="minimizeWindow('settings')">➖</button>
+          <button class="btn" onclick="closeWindow('settings')">❌</button>
+        </div>
+      </div>
+      <div class="window-body">
+        <label
+          ><input type="checkbox" id="param-enutrof" /> Activer les punchlines
+          de l'Enutrof</label
+        ><br />
+        <label
+          ><input type="checkbox" id="param-alertes" /> Alerte client à 0
+          combat</label
+        >
+
+        <hr />
+
+        <button class="btn" onclick="exportData()">
+          📤 Exporter mes données</button
+        ><br /><br />
+        <input type="file" onchange="importData(event)" /><br /><br />
+        <button class="btn danger" onclick="resetDashboard()">
+          🧨 Réinitialiser tout
+        </button>
+        <hr />
+        <div style="margin-top: 20px; text-align: center;">
+            <p style="margin: 0; font-size: 13px; opacity: 0.7;">Site par <strong>Esteban Mestrie</strong></p>
+            <a href="https://buymeacoffee.com/estebanmestrie" target="_blank" onclick="talkEnutrofCoffee()"
+               style="display: inline-block; margin-top: 8px;">
+              <img src="https://cdn.buymeacoffee.com/buttons/v2/default-orange.png" 
+                   alt="Buy Me a Coffee"
+                   style="width: 100%; max-width: 180px; height: auto; border: none;">
+            </a>
+          </div>
+      <div
+        class="resize-handle"
+        onmousedown="startResize(event, 'settings')"
+      ></div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
