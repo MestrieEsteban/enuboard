@@ -6,14 +6,19 @@
     <title>Dashboard PL Dofus</title>
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
   </head>
   <body>
     <div id="taskbar">
       <button class="btn" onclick="openWindow('messages')">
-        <i class="fas fa-scroll"></i> Messagessss
+        <i class="fas fa-scroll"></i> Messages
       </button>
       <button class="btn" onclick="openWindow('clients')">
         <i class="fas fa-users"></i> Clients
+      </button>
+      <button class="btn" onclick="openWindow('kamas')">
+        <i class="fas fa-money">💰</i> Kamas
       </button>
       <!-- <button class="btn" onclick="openWindow('groupe')">🛡️ Groupe</button> -->
       <!-- <button class="btn" onclick="openWindow('stats')">💰 Stats</button> -->
@@ -34,9 +39,9 @@
       <div class="window-header" onmousedown="startDrag(event, 'messages')">
         <span class="title"><i class="fas fa-scroll"></i> Messages rapides</span>
         <div class="controls">
-          <button class="btn" onclick="minimizeWindow('messages')">
+          <!-- <button class="btn" onclick="minimizeWindow('messages')">
             <i class="fas fa-minus"></i>
-          </button>
+          </button> -->
           <button class="btn" onclick="closeWindow('messages')">
             <i class="fas fa-xmark"></i>
           </button>
@@ -133,9 +138,9 @@
   <div class="window-header" onmousedown="startDrag(event, 'clients')">
     <span class="title"><i class="fas fa-users"></i> Clients en cours</span>
     <div class="controls">
-      <button class="btn" onclick="minimizeWindow('clients')">
+      <!-- <button class="btn" onclick="minimizeWindow('clients')">
         <i class="fas fa-minus"></i>
-      </button>
+      </button> -->
       <button class="btn" onclick="closeWindow('clients')">
         <i class="fas fa-xmark"></i>
       </button>
@@ -182,8 +187,9 @@
       <div class="window-header" onmousedown="startDrag(event, 'memo')">
         <span class="title">🖋️ Mémo</span>
         <div class="controls">
-          <button class="btn" onclick="minimizeWindow('memo')">➖</button>
-          <button class="btn" onclick="closeWindow('memo')">❌</button>
+          <button class="btn" onclick="closeWindow('memo')">
+            <i class="fas fa-xmark"></i>
+          </button>
         </div>
       </div>
       <div class="window-body" style="height: calc(100% - 36px); padding: 0">
@@ -211,8 +217,9 @@
       <div class="window-header" onmousedown="startDrag(event, 'stats')">
         <span class="title">💰 Statistiques (beta)</span>
         <div class="controls">
-          <button class="btn" onclick="minimizeWindow('stats')">➖</button>
-          <button class="btn" onclick="closeWindow('stats')">❌</button>
+          <button class="btn" onclick="closeWindow('stats')">
+            <i class="fas fa-xmark"></i>
+          </button>
         </div>
       </div>
       <div class="window-body" id="stats-content">
@@ -239,53 +246,123 @@
       <div id="enutrof-bulle"></div>
     </div>
 
-    <!-- Fenêtre Paramètres -->
-    <div
-      class="window"
-      id="window-settings"
-      style="top: 200px; left: 800px; width: 320px"
-    >
-      <div class="window-header" onmousedown="startDrag(event, 'settings')">
-        <span class="title">⚙️ Paramètres</span>
+    <!-- Fenêtre Kamas -->
+    <div class="window" id="window-kamas" style="top: 150px; left: 200px; width: 380px;">
+      <div class="window-header" onmousedown="startDrag(event, 'kamas')">
+        <span class="title">💰 Suivi des Kamas</span>
         <div class="controls">
-          <button class="btn" onclick="minimizeWindow('settings')">➖</button>
-          <button class="btn" onclick="closeWindow('settings')">❌</button>
+          <button class="btn" onclick="closeWindow('kamas')">
+            <i class="fas fa-xmark"></i>
+          </button>
         </div>
       </div>
       <div class="window-body">
-        <label
-          ><input type="checkbox" id="param-enutrof" /> Activer les punchlines
-          de l'Enutrof</label
-        ><br />
-        <label
-          ><input type="checkbox" id="param-alertes" /> Alerte client à 0
-          combat</label
-        >
-
-        <hr />
-
-        <button class="btn" onclick="exportData()">
-          📤 Exporter mes données</button
-        ><br /><br />
-        <input type="file" onchange="importData(event)" /><br /><br />
-        <button class="btn danger" onclick="resetDashboard()">
-          🧨 Réinitialiser tout
+        <div class="input-field">
+          <label for="kamas-start"><i class="fas fa-coins"></i> Kamas début de journée</label>
+          <input type="number" id="kamas-start" placeholder="Ex : 1 000 000">
+        </div>
+    
+        <div class="input-field" style="margin-top: 12px;">
+          <label for="kamas-end"><i class="fas fa-sack-dollar"></i> Kamas fin de journée</label>
+          <input type="number" id="kamas-end" placeholder="Ex : 1 340 000">
+        </div>
+    
+        <div style="margin-top: 16px; padding: 10px; background: #fffdf4; border: 2px dashed #d2b37f; border-radius: 8px;">
+          <strong>💸 Bénéfice :</strong>
+          <span id="kamas-profit" style="font-weight: bold;">0</span> kamas
+        </div>
+    
+        <button class="btn primary-btn" style="margin-top: 16px; width: 100%;" onclick="saveKamasDay()">
+          📅 Enregistrer la journée
         </button>
-        <hr />
-        <div style="margin-top: 20px; text-align: center;">
-            <p style="margin: 0; font-size: 13px; opacity: 0.7;">Site par <strong>Esteban Mestrie</strong></p>
-            <a href="https://buymeacoffee.com/estebanmestrie" target="_blank" onclick="talkEnutrofCoffee()"
-               style="display: inline-block; margin-top: 8px;">
-              <img src="https://cdn.buymeacoffee.com/buttons/v2/default-orange.png" 
-                   alt="Buy Me a Coffee"
-                   style="width: 100%; max-width: 180px; height: auto; border: none;">
-            </a>
-          </div>
-      <div
-        class="resize-handle"
-        onmousedown="startResize(event, 'settings')"
-      ></div>
+        <button class="btn primary-btn" style="margin-top: 16px; width: 100%;" onclick="openWindow('kamas-history')">
+          <i class="fas fa-chart-line"></i> Voir l'historique
+        </button>
+        <!-- <button class="btn" onclick="openWindow('kamas-history')">
+          <i class="fas fa-chart-line"></i> Voir l'historique
+        </button>
+     -->
+      </div>
+      <div class="resize-handle" onmousedown="startResize(event, 'kamas')"></div>
     </div>
+
+<!-- Fenêtre Historique des Kamas -->
+<div class="window" id="window-kamas-history" style="top: 300px; left: 500px; width: 420px; height: 400px;">
+  <div class="window-header" onmousedown="startDrag(event, 'kamas-history')">
+    <span class="title">📊 Historique Kamas</span>
+    <div class="controls">
+      <button class="btn" onclick="closeWindow('kamas-history')">
+        <i class="fas fa-xmark"></i>
+      </button>
+    </div>
+  </div>
+  <div class="window-body" style="overflow-y: auto;">
+    <canvas id="kamasChart" style="width:100%; height:200px; margin-bottom: 10px;"></canvas>
+    <table style="width:100%; font-size: 14px;">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Bénéfice</th>
+          <th>✖</th>
+        </tr>
+      </thead>
+      <tbody id="kamas-history">
+        <!-- Historique injecté ici -->
+      </tbody>
+    </table>
+    <div style="height: 30px;"></div>
+  </div>
+  <div class="resize-handle" onmousedown="startResize(event, 'kamas-history')"></div>
+</div>
+
+
+    <!-- Fenêtre Paramètres -->
+<div class="window" id="window-settings" style="top: 200px; left: 800px; width: 320px">
+  <div class="window-header" onmousedown="startDrag(event, 'settings')">
+    <span class="title">⚙️ Paramètres</span>
+    <div class="controls">
+      <button class="btn" onclick="closeWindow('settings')">
+        <i class="fas fa-xmark"></i>
+      </button>
+    </div>
+  </div>
+  <div class="window-body">
+    <label>
+      <input type="checkbox" id="param-enutrof" />
+      Activer les punchlines de l'Enutrof
+    </label><br />
+    <label>
+      <input type="checkbox" id="param-alertes" />
+      Alerte client à 0 combat
+    </label>
+
+    <hr />
+
+    <button class="btn" onclick="exportData()">📤 Exporter mes données</button><br /><br />
+    <input type="file" onchange="importData(event)" /><br /><br />
+    <button class="btn danger" onclick="resetDashboard()">🧨 Réinitialiser tout</button>
+
+    <hr />
+    <div style="margin-top: 20px; text-align: center;">
+      <p style="margin: 0; font-size: 13px; opacity: 0.7;">
+        Site par <strong>Esteban Mestrie</strong>
+      </p>
+      <a href="https://buymeacoffee.com/estebanmestrie" target="_blank" onclick="talkEnutrofCoffee()"
+        style="display: inline-block; margin-top: 8px;">
+        <img src="https://cdn.buymeacoffee.com/buttons/v2/default-orange.png"
+             alt="Buy Me a Coffee"
+             style="width: 100%; max-width: 180px; height: auto; border: none;">
+      </a>
+    </div>
+
+    <!-- ✅ Ajout de la version -->
+    <div style="margin-top: 12px; text-align: right; font-size: 12px; opacity: 0.5;">
+      Version <strong>V1.1</strong>
+    </div>
+  </div>
+  <div class="resize-handle" onmousedown="startResize(event, 'settings')"></div>
+</div>
+
 
     <script src="script.js"></script>
   </body>

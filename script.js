@@ -7,8 +7,6 @@ const userParams = JSON.parse(localStorage.getItem("params")) || {
   alertes: false,
 };
 
-
-
 // === Enutrof ===
 const enutrofQuotes = [
   "Encore un client qui va cracher ses kamas.",
@@ -60,8 +58,12 @@ function renderClients() {
       <button class="btn" onclick="addCombats(${index}, 5)">+5</button>
       </td>
       <td>
-        <button on class="btn" onclick="copyPriceMessage(${index})" title="${getPreviewPrice(index)}">Tarif</button>
-        <button class="btn" onclick="copyEndMessage(${index})" title="${getPreviewEnd(index)}">Fin</button>
+        <button on class="btn" onclick="copyPriceMessage(${index})" title="${getPreviewPrice(
+      index
+    )}">Tarif</button>
+        <button class="btn" onclick="copyEndMessage(${index})" title="${getPreviewEnd(
+      index
+    )}">Fin</button>
       </td>
       <td><input type="checkbox" ${
         client.paid ? "checked" : ""
@@ -169,20 +171,24 @@ function applyFormInputs() {
 
 // Fonction pour formater le message de recrutement
 function formatRecruitMessage(donjon, salle, prix, combats, places) {
-  if (!donjon) return '';
-  
+  if (!donjon) return "";
+
   const prixNum = parseInt(prix) || 0;
   const combatsNum = parseInt(combats) || 5;
   const totalPrix = combatsNum === 5 ? 200000 : prixNum * combatsNum;
-  
+
   let message = `Recrute PL ${donjon}`;
   if (salle) message += ` ${salle}`;
-  message += ` — ${prixNum.toLocaleString('fr-FR')}k/cbt — ${totalPrix.toLocaleString('fr-FR')}k/${combatsNum} cbts me mp :) !`;
-  
+  message += ` — ${prixNum.toLocaleString(
+    "fr-FR"
+  )}k/cbt — ${totalPrix.toLocaleString(
+    "fr-FR"
+  )}k/${combatsNum} cbts me mp :) !`;
+
   if (places) {
     const placesNum = parseInt(places);
     if (!isNaN(placesNum)) {
-      message += ` (${placesNum} place${placesNum > 1 ? 's' : ''})`;
+      message += ` (${placesNum} place${placesNum > 1 ? "s" : ""})`;
     } else {
       message += ` (${places})`;
     }
@@ -193,58 +199,59 @@ function formatRecruitMessage(donjon, salle, prix, combats, places) {
 
 // Fonction pour mettre à jour l'aperçu du message
 function updateMessagePreview() {
-  const donjon = document.getElementById('input-donjon').value;
-  const salle = document.getElementById('input-salle').value;
-  const prix = document.getElementById('input-prix').value;
-  const combats = document.getElementById('input-combats').value;
-  const places = document.getElementById('input-places').value;
+  const donjon = document.getElementById("input-donjon").value;
+  const salle = document.getElementById("input-salle").value;
+  const prix = document.getElementById("input-prix").value;
+  const combats = document.getElementById("input-combats").value;
+  const places = document.getElementById("input-places").value;
 
-  const previewElement = document.getElementById('message-preview-content');
-  previewElement.classList.add('updating');
+  const previewElement = document.getElementById("message-preview-content");
+  previewElement.classList.add("updating");
 
-  const message = formatRecruitMessage(donjon, salle, prix, combats, places) || 
-    'Remplissez les champs pour voir l\'aperçu du message...';
+  const message =
+    formatRecruitMessage(donjon, salle, prix, combats, places) ||
+    "Remplissez les champs pour voir l'aperçu du message...";
 
   previewElement.textContent = message;
-  
+
   setTimeout(() => {
-    previewElement.classList.remove('updating');
+    previewElement.classList.remove("updating");
   }, 200);
 }
 
 // Ajouter les écouteurs d'événements pour la mise à jour en direct
 function setupMessagePreview() {
   const inputs = [
-    'input-donjon',
-    'input-salle',
-    'input-prix',
-    'input-combats',
-    'input-places'
+    "input-donjon",
+    "input-salle",
+    "input-prix",
+    "input-combats",
+    "input-places",
   ];
 
-  inputs.forEach(id => {
+  inputs.forEach((id) => {
     const input = document.getElementById(id);
     if (input) {
-      input.addEventListener('input', updateMessagePreview);
+      input.addEventListener("input", updateMessagePreview);
     }
   });
 }
 
 // Fonction pour copier le message de recrutement
 function copyMessage(type) {
-  const donjon = document.getElementById('input-donjon').value;
-  const salle = document.getElementById('input-salle').value;
-  const prix = document.getElementById('input-prix').value;
-  const combats = document.getElementById('input-combats').value;
-  const places = document.getElementById('input-places').value;
+  const donjon = document.getElementById("input-donjon").value;
+  const salle = document.getElementById("input-salle").value;
+  const prix = document.getElementById("input-prix").value;
+  const combats = document.getElementById("input-combats").value;
+  const places = document.getElementById("input-places").value;
 
-  let message = '';
-  
-  if (type === 'recrutement') {
+  let message = "";
+
+  if (type === "recrutement") {
     message = formatRecruitMessage(donjon, salle, prix, combats, places);
-  } else if (type === 'go') {
-    message = `Go ${donjon}${salle ? ` ${salle}` : ''} !`;
-  }else if (type === 'info') {
+  } else if (type === "go") {
+    message = `Go ${donjon}${salle ? ` ${salle}` : ""} !`;
+  } else if (type === "info") {
     message = `Mode créa - F1 - Attention aux challs`;
   }
 
@@ -258,7 +265,16 @@ function copyMessage(type) {
 }
 
 // Initialiser la prévisualisation au chargement
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("kamas-start").value =
+    localStorage.getItem("kamasStart") || "";
+  document.getElementById("kamas-end").value =
+    localStorage.getItem("kamasEnd") || "";
+    document.addEventListener("input", (e) => {
+      if (e.target.id === "kamas-start") localStorage.setItem("kamasStart", e.target.value);
+      if (e.target.id === "kamas-end") localStorage.setItem("kamasEnd", e.target.value);
+    });
+  updateKamasProfit(); // Mise à jour affichage
   setupMessagePreview();
   updateMessagePreview(); // Afficher l'état initial
 });
@@ -499,7 +515,7 @@ document.addEventListener("mouseup", () => {
 
 // === Init ===
 window.addEventListener("DOMContentLoaded", () => {
-  ["messages", "clients", "memo", "settings" ].forEach(
+  ["messages", "clients", "memo", "settings", "kamas"].forEach(
     applyWindowState
   );
   applyFormInputs();
@@ -526,13 +542,16 @@ document.addEventListener("input", (e) => {
   if (e.target.id.startsWith("param-")) saveParams();
 });
 
-
 function getPreviewPrice(index) {
   const pseudo = clients[index].name;
   const prix = parseInt(document.getElementById("input-prix")?.value || "0");
-  const combats = parseInt(document.getElementById("input-combats")?.value || "5");
+  const combats = parseInt(
+    document.getElementById("input-combats")?.value || "5"
+  );
   const total = combats === 5 ? 200000 : prix * combats;
-  return `/w ${pseudo} ${prix.toLocaleString("fr-FR")}k/cbt — ${total.toLocaleString("fr-FR")}k/${combats} cbts`;
+  return `/w ${pseudo} ${prix.toLocaleString(
+    "fr-FR"
+  )}k/cbt — ${total.toLocaleString("fr-FR")}k/${combats} cbts`;
 }
 
 function getPreviewEnd(index) {
@@ -540,15 +559,126 @@ function getPreviewEnd(index) {
 }
 
 function copyInfoMessage() {
-  alert('test');
-  const dungeonName = document.getElementById('dungeon-name').value;
-  const dungeonLevel = document.getElementById('dungeon-level').value;
+  alert("test");
+  const dungeonName = document.getElementById("dungeon-name").value;
+  const dungeonLevel = document.getElementById("dungeon-level").value;
   const message = `${dungeonName} ${dungeonLevel}`;
-  
-  navigator.clipboard.writeText(message).then(() => {
-    showNotification('Message copié !');
-  }).catch(err => {
-    console.error('Erreur lors de la copie:', err);
-    showNotification('Erreur lors de la copie du message', 'error');
+
+  navigator.clipboard
+    .writeText(message)
+    .then(() => {
+      showNotification("Message copié !");
+    })
+    .catch((err) => {
+      console.error("Erreur lors de la copie:", err);
+      showNotification("Erreur lors de la copie du message", "error");
+    });
+}
+
+let kamasLog = JSON.parse(localStorage.getItem("kamasLog")) || [];
+
+function updateKamasProfit() {
+  const start = parseInt(document.getElementById("kamas-start").value) || 0;
+  const end = parseInt(document.getElementById("kamas-end").value) || 0;
+  const profit = end - start;
+  document.getElementById("kamas-profit").textContent =
+    profit.toLocaleString("fr-FR");
+}
+
+function saveKamasDay() {
+  const start = parseInt(document.getElementById("kamas-start").value);
+  const end = parseInt(document.getElementById("kamas-end").value);
+
+  if (isNaN(start) || isNaN(end)) {
+    alert("Veuillez remplir les deux champs de kamas.");
+    return;
+  }
+
+  const profit = end - start;
+  const date = new Date().toISOString().split("T")[0];
+
+  kamasLog.push({ date, profit });
+  localStorage.setItem("kamasLog", JSON.stringify(kamasLog));
+  renderKamasHistory();
+  showNotification("✔ Journée enregistrée !");
+  renderKamasChart();
+}
+
+function renderKamasHistory(index) {
+  const tbody = document.getElementById("kamas-history");
+  if (!tbody) return;
+  tbody.innerHTML = "";
+
+  [...kamasLog].reverse().forEach((entry) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+  <td>${entry.date}</td>
+  <td>${entry.profit.toLocaleString("fr-FR")}k</td>
+  <td><button class="btn danger" onclick="deleteKamasEntry(${
+    kamasLog.length - 1 - index
+  })">✖</button></td>
+`;
+    tbody.appendChild(tr);
+  });
+  renderKamasChart();
+}
+
+function deleteKamasEntry(index) {
+  kamasLog.splice(index, 1);
+  localStorage.setItem("kamasLog", JSON.stringify(kamasLog));
+  renderKamasHistory(index);
+  showNotification("🗑️ Journée supprimée !");
+}
+
+let kamasChart;
+
+function renderKamasChart() {
+  const ctx = document.getElementById("kamasChart")?.getContext("2d");
+  if (!ctx) return;
+
+  const labels = kamasLog.map((entry) => entry.date);
+  const data = kamasLog.map((entry) => entry.profit);
+
+  if (kamasChart) kamasChart.destroy(); // pour éviter les doublons
+
+  kamasChart = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels,
+      datasets: [
+        {
+          label: "Bénéfice quotidien (kamas)",
+          data,
+          borderColor: "#c2a76d",
+          backgroundColor: "rgba(194, 167, 109, 0.2)",
+          tension: 0.3,
+          fill: true,
+          pointRadius: 4,
+          pointHoverRadius: 6,
+        },
+      ],
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            callback: (val) => val.toLocaleString("fr-FR") + "k",
+          },
+        },
+      },
+      plugins: {
+        legend: { display: false },
+      },
+    },
   });
 }
+
+document.addEventListener("input", (e) => {
+  if (["kamas-start", "kamas-end"].includes(e.target.id)) {
+    updateKamasProfit();
+  }
+});
+
+renderKamasChart();
+renderKamasHistory();
