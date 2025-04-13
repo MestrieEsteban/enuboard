@@ -274,6 +274,8 @@ document.addEventListener("DOMContentLoaded", () => {
       if (e.target.id === "kamas-start") localStorage.setItem("kamasStart", e.target.value);
       if (e.target.id === "kamas-end") localStorage.setItem("kamasEnd", e.target.value);
     });
+
+    
   updateKamasProfit(); // Mise à jour affichage
   setupMessagePreview();
   updateMessagePreview(); // Afficher l'état initial
@@ -448,6 +450,11 @@ function openWindow(id) {
 
 function closeWindow(id) {
   const el = document.getElementById(`window-${id}`);
+  // if(id == "welcome")
+  // {
+  //   openWindow("messages");
+  //   openWindow("clients");
+  // }
   if (el) {
     el.style.display = "none";
     saveWindowState(id);
@@ -515,7 +522,8 @@ document.addEventListener("mouseup", () => {
 
 // === Init ===
 window.addEventListener("DOMContentLoaded", () => {
-  ["messages", "clients", "memo", "settings", "kamas"].forEach(
+  //start site la !
+  ["messages", "clients", "memo", "kamas", "welcome"].forEach(
     applyWindowState
   );
   applyFormInputs();
@@ -682,3 +690,5 @@ document.addEventListener("input", (e) => {
 
 renderKamasChart();
 renderKamasHistory();
+
+

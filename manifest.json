@@ -1,0 +1,23 @@
+{
+    "name": "Dashboard PL Dofus",
+    "short_name": "PL Dofus",
+    "start_url": ".",
+    "display": "standalone",
+    "background_color": "#f9f4e6",
+    "theme_color": "#c2a76d",
+    "orientation": "any",
+    "description": "Un outil pratique pour gérer ton activité de PL sur Dofus : clients, combats, kamas, messages, et plus.",
+    "icons": [
+      {
+        "src": "favicon-192.png",
+        "sizes": "192x192",
+        "type": "image/png"
+      },
+      {
+        "src": "favicon-512.png",
+        "sizes": "512x512",
+        "type": "image/png"
+      }
+    ]
+  }
+  

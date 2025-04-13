@@ -3,11 +3,25 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dashboard PL Dofus</title>
+    <title>Dashboard PL Dofus | Gère ton activité de Power Leveling</title>
+    <meta name="description" content="Un dashboard complet pour gérer ton activité de Power Leveling sur Dofus. Messages rapides, gestion de clients, historique de kamas, statistiques et plus.">
+    <meta name="author" content="Esteban Mestrie">
+    <meta name="keywords" content="Dofus, PL, Power Leveling, Kamas, Dashboard, Outils Dofus, Suivi Kamas, Clients Dofus, Esteban Mestrie">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Dashboard PL Dofus">
+    <meta property="og:description" content="Gère ton activité de Power Leveling (PL) sur Dofus avec un dashboard tout-en-un.">
+    <meta property="og:image" content="enuboard.png">
+    <meta property="og:url" content="https://enuboard.fr/">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Dashboard PL Dofus">
+    <meta name="twitter:description" content="Gère ton activité de PL sur Dofus comme un pro !">
+    <meta name="twitter:image" content="enuboard.png">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
   </head>
   <body>
     <div id="taskbar">
@@ -37,7 +51,9 @@
       style="top: 100px; left: 100px; width: 400px"
     >
       <div class="window-header" onmousedown="startDrag(event, 'messages')">
-        <span class="title"><i class="fas fa-scroll"></i> Messages rapides</span>
+        <span class="title"
+          ><i class="fas fa-scroll"></i> Messages rapides</span
+        >
         <div class="controls">
           <!-- <button class="btn" onclick="minimizeWindow('messages')">
             <i class="fas fa-minus"></i>
@@ -134,49 +150,75 @@
     </div>
 
     <!-- Fenêtre Clients (mode tableau) -->
-<div class="window" id="window-clients" style="top: 25px; left: 600px; width: 650px;">
-  <div class="window-header" onmousedown="startDrag(event, 'clients')">
-    <span class="title"><i class="fas fa-users"></i> Clients en cours</span>
-    <div class="controls">
-      <!-- <button class="btn" onclick="minimizeWindow('clients')">
+    <div
+      class="window"
+      id="window-clients"
+      style="top: 25px; left: 600px; width: 650px"
+    >
+      <div class="window-header" onmousedown="startDrag(event, 'clients')">
+        <span class="title"><i class="fas fa-users"></i> Clients en cours</span>
+        <div class="controls">
+          <!-- <button class="btn" onclick="minimizeWindow('clients')">
         <i class="fas fa-minus"></i>
       </button> -->
-      <button class="btn" onclick="closeWindow('clients')">
-        <i class="fas fa-xmark"></i>
-      </button>
+          <button class="btn" onclick="closeWindow('clients')">
+            <i class="fas fa-xmark"></i>
+          </button>
+        </div>
+      </div>
+      <div class="window-body">
+        <form
+          onsubmit="addClient(event)"
+          style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px"
+        >
+          <input
+            type="text"
+            id="client-name"
+            placeholder="Pseudo du client"
+            required
+          />
+          <input
+            type="number"
+            id="client-combats"
+            placeholder="Combats restants"
+            min="1"
+            required
+            value="1"
+          />
+          <label><input type="checkbox" id="client-paid" /> A payé</label>
+          <button class="btn" type="submit">Ajouter</button>
+        </form>
+
+        <button
+          class="btn"
+          onclick="decrementAllCombats()"
+          style="margin-bottom: 10px"
+        >
+          ➖ Retirer 1 combat à tous
+        </button>
+
+        <table class="client-table">
+          <thead>
+            <tr>
+              <th>Pseudo</th>
+              <th>Combats</th>
+              <th>-</th>
+              <th>+</th>
+              <th>Messages</th>
+              <th>Payé</th>
+              <th>Supprimer</th>
+            </tr>
+          </thead>
+          <tbody id="client-list">
+            <!-- les clients seront injectés ici via JS -->
+          </tbody>
+        </table>
+      </div>
+      <div
+        class="resize-handle"
+        onmousedown="startResize(event, 'clients')"
+      ></div>
     </div>
-  </div>
-  <div class="window-body">
-    <form onsubmit="addClient(event)" style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px;">
-      <input type="text" id="client-name" placeholder="Pseudo du client" required />
-      <input type="number" id="client-combats" placeholder="Combats restants" min="1" required value="1" />
-      <label><input type="checkbox" id="client-paid" /> A payé</label>
-      <button class="btn" type="submit">Ajouter</button>
-    </form>
-
-    <button class="btn" onclick="decrementAllCombats()" style="margin-bottom: 10px;">
-      ➖ Retirer 1 combat à tous
-    </button>
-
-    <table class="client-table">
-      <thead>
-        <tr>
-          <th>Pseudo</th>
-          <th>Combats</th>
-          <th>-</th>
-          <th>+</th>
-          <th>Messages</th>
-          <th>Payé</th>
-          <th>Supprimer</th>
-        </tr>
-      </thead>
-      <tbody id="client-list">
-        <!-- les clients seront injectés ici via JS -->
-      </tbody>
-    </table>
-  </div>
-  <div class="resize-handle" onmousedown="startResize(event, 'clients')"></div>
-</div>
 
     <!-- Fenêtre Mémo -->
     <div
@@ -247,7 +289,11 @@
     </div>
 
     <!-- Fenêtre Kamas -->
-    <div class="window" id="window-kamas" style="top: 150px; left: 200px; width: 380px;">
+    <div
+      class="window"
+      id="window-kamas"
+      style="top: 150px; left: 200px; width: 380px"
+    >
       <div class="window-header" onmousedown="startDrag(event, 'kamas')">
         <span class="title">💰 Suivi des Kamas</span>
         <div class="controls">
@@ -258,24 +304,44 @@
       </div>
       <div class="window-body">
         <div class="input-field">
-          <label for="kamas-start"><i class="fas fa-coins"></i> Kamas début de journée</label>
-          <input type="number" id="kamas-start" placeholder="Ex : 1 000 000">
+          <label for="kamas-start"
+            ><i class="fas fa-coins"></i> Kamas début de journée</label
+          >
+          <input type="number" id="kamas-start" placeholder="Ex : 1 000 000" />
         </div>
-    
-        <div class="input-field" style="margin-top: 12px;">
-          <label for="kamas-end"><i class="fas fa-sack-dollar"></i> Kamas fin de journée</label>
-          <input type="number" id="kamas-end" placeholder="Ex : 1 340 000">
+
+        <div class="input-field" style="margin-top: 12px">
+          <label for="kamas-end"
+            ><i class="fas fa-sack-dollar"></i> Kamas fin de journée</label
+          >
+          <input type="number" id="kamas-end" placeholder="Ex : 1 340 000" />
         </div>
-    
-        <div style="margin-top: 16px; padding: 10px; background: #fffdf4; border: 2px dashed #d2b37f; border-radius: 8px;">
+
+        <div
+          style="
+            margin-top: 16px;
+            padding: 10px;
+            background: #fffdf4;
+            border: 2px dashed #d2b37f;
+            border-radius: 8px;
+          "
+        >
           <strong>💸 Bénéfice :</strong>
-          <span id="kamas-profit" style="font-weight: bold;">0</span> kamas
+          <span id="kamas-profit" style="font-weight: bold">0</span> kamas
         </div>
-    
-        <button class="btn primary-btn" style="margin-top: 16px; width: 100%;" onclick="saveKamasDay()">
+
+        <button
+          class="btn primary-btn"
+          style="margin-top: 16px; width: 100%"
+          onclick="saveKamasDay()"
+        >
           📅 Enregistrer la journée
         </button>
-        <button class="btn primary-btn" style="margin-top: 16px; width: 100%;" onclick="openWindow('kamas-history')">
+        <button
+          class="btn primary-btn"
+          style="margin-top: 16px; width: 100%"
+          onclick="openWindow('kamas-history')"
+        >
           <i class="fas fa-chart-line"></i> Voir l'historique
         </button>
         <!-- <button class="btn" onclick="openWindow('kamas-history')">
@@ -283,86 +349,199 @@
         </button>
      -->
       </div>
-      <div class="resize-handle" onmousedown="startResize(event, 'kamas')"></div>
+      <div
+        class="resize-handle"
+        onmousedown="startResize(event, 'kamas')"
+      ></div>
     </div>
 
-<!-- Fenêtre Historique des Kamas -->
-<div class="window" id="window-kamas-history" style="top: 300px; left: 500px; width: 420px; height: 400px;">
-  <div class="window-header" onmousedown="startDrag(event, 'kamas-history')">
-    <span class="title">📊 Historique Kamas</span>
-    <div class="controls">
-      <button class="btn" onclick="closeWindow('kamas-history')">
-        <i class="fas fa-xmark"></i>
-      </button>
+    <!-- Fenêtre Historique des Kamas -->
+    <div
+      class="window"
+      id="window-kamas-history"
+      style="top: 300px; left: 500px; width: 420px; height: 400px"
+    >
+      <div
+        class="window-header"
+        onmousedown="startDrag(event, 'kamas-history')"
+      >
+        <span class="title">📊 Historique Kamas</span>
+        <div class="controls">
+          <button class="btn" onclick="closeWindow('kamas-history')">
+            <i class="fas fa-xmark"></i>
+          </button>
+        </div>
+      </div>
+      <div class="window-body" style="overflow-y: auto">
+        <canvas
+          id="kamasChart"
+          style="width: 100%; height: 200px; margin-bottom: 10px"
+        ></canvas>
+        <table style="width: 100%; font-size: 14px">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Bénéfice</th>
+              <th>✖</th>
+            </tr>
+          </thead>
+          <tbody id="kamas-history">
+            <!-- Historique injecté ici -->
+          </tbody>
+        </table>
+        <div style="height: 30px"></div>
+      </div>
+      <div
+        class="resize-handle"
+        onmousedown="startResize(event, 'kamas-history')"
+      ></div>
     </div>
-  </div>
-  <div class="window-body" style="overflow-y: auto;">
-    <canvas id="kamasChart" style="width:100%; height:200px; margin-bottom: 10px;"></canvas>
-    <table style="width:100%; font-size: 14px;">
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Bénéfice</th>
-          <th>✖</th>
-        </tr>
-      </thead>
-      <tbody id="kamas-history">
-        <!-- Historique injecté ici -->
-      </tbody>
-    </table>
-    <div style="height: 30px;"></div>
-  </div>
-  <div class="resize-handle" onmousedown="startResize(event, 'kamas-history')"></div>
-</div>
-
 
     <!-- Fenêtre Paramètres -->
-<div class="window" id="window-settings" style="top: 200px; left: 800px; width: 320px">
-  <div class="window-header" onmousedown="startDrag(event, 'settings')">
-    <span class="title">⚙️ Paramètres</span>
-    <div class="controls">
-      <button class="btn" onclick="closeWindow('settings')">
-        <i class="fas fa-xmark"></i>
-      </button>
+    <div
+      class="window"
+      id="window-settings"
+      style="top: 200px; left: 800px; width: 320px"
+    >
+      <div class="window-header" onmousedown="startDrag(event, 'settings')">
+        <span class="title">⚙️ Paramètres</span>
+        <div class="controls">
+          <button class="btn" onclick="closeWindow('settings')">
+            <i class="fas fa-xmark"></i>
+          </button>
+        </div>
+      </div>
+      <div class="window-body">
+        <label>
+          <input type="checkbox" id="param-enutrof" />
+          Activer les punchlines de l'Enutrof </label
+        ><br />
+        <label>
+          <input type="checkbox" id="param-alertes" />
+          Alerte client à 0 combat
+        </label>
+
+        <hr />
+
+        <button class="btn" onclick="exportData()">
+          📤 Exporter mes données</button
+        ><br /><br />
+        <input type="file" onchange="importData(event)" /><br /><br />
+        <button class="btn danger" onclick="resetDashboard()">
+          🧨 Réinitialiser tout
+        </button>
+
+        <hr />
+        <div style="margin-top: 20px; text-align: center">
+          <p style="margin: 0; font-size: 13px; opacity: 0.7">
+            Site par <strong>Esteban Mestrie</strong>
+          </p>
+          <a
+            href="https://buymeacoffee.com/estebanmestrie"
+            target="_blank"
+            onclick="talkEnutrofCoffee()"
+            style="display: inline-block; margin-top: 8px"
+          >
+            <img
+              src="https://cdn.buymeacoffee.com/buttons/v2/default-orange.png"
+              alt="Buy Me a Coffee"
+              style="width: 100%; max-width: 180px; height: auto; border: none"
+            />
+          </a>
+        </div>
+
+        <!-- ✅ Ajout de la version -->
+        <div
+          style="
+            margin-top: 12px;
+            text-align: right;
+            font-size: 12px;
+            opacity: 0.5;
+          "
+        >
+          Version <strong>V1.1</strong>
+        </div>
+      </div>
+      <div
+        class="resize-handle"
+        onmousedown="startResize(event, 'settings')"
+      ></div>
     </div>
-  </div>
-  <div class="window-body">
-    <label>
-      <input type="checkbox" id="param-enutrof" />
-      Activer les punchlines de l'Enutrof
-    </label><br />
-    <label>
-      <input type="checkbox" id="param-alertes" />
-      Alerte client à 0 combat
-    </label>
 
-    <hr />
+    <div
+      class="window"
+      id="window-welcome"
+      style="top: 150px; left: 150px; width: 460px"
+    >
+      <div class="window-header" onmousedown="startDrag(event, 'welcome')">
+        <span class="title">👋 Bienvenue sur le Dashboard PL Dofus</span>
+        <div class="controls">
+          <button class="btn" onclick="closeWindow('welcome')">
+            <i class="fas fa-xmark"></i>
+          </button>
+        </div>
+      </div>
+      <div class="window-body">
+        <p style="margin-bottom: 10px">
+          🎯 Cet outil a été conçu pour t'aider à organiser et suivre ton
+          activité de <strong>Power Leveling</strong> (PL) sur Dofus.
+        </p>
 
-    <button class="btn" onclick="exportData()">📤 Exporter mes données</button><br /><br />
-    <input type="file" onchange="importData(event)" /><br /><br />
-    <button class="btn danger" onclick="resetDashboard()">🧨 Réinitialiser tout</button>
+        <div
+          style="
+            background: #fffdf4;
+            border: 2px dashed #c2a76d;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+          "
+        >
+          <p style="margin: 0 0 6px">
+            <strong>Ce que tu peux faire ici :</strong>
+          </p>
+          <ul style="padding-left: 20px; margin: 0">
+            <li>📜 Gérer des messages de recrutement personnalisés</li>
+            <li>👥 Ajouter et suivre tes clients + combats restants</li>
+            <li>💰 Suivre tes gains journaliers avec un historique + graphe</li>
+            <li>🧠 Garder des notes importantes dans un petit mémo</li>
+            <li>⚙️ Sauvegarder ou importer tes données facilement</li>
+          </ul>
+        </div>
 
-    <hr />
-    <div style="margin-top: 20px; text-align: center;">
-      <p style="margin: 0; font-size: 13px; opacity: 0.7;">
-        Site par <strong>Esteban Mestrie</strong>
-      </p>
-      <a href="https://buymeacoffee.com/estebanmestrie" target="_blank" onclick="talkEnutrofCoffee()"
-        style="display: inline-block; margin-top: 8px;">
-        <img src="https://cdn.buymeacoffee.com/buttons/v2/default-orange.png"
-             alt="Buy Me a Coffee"
-             style="width: 100%; max-width: 180px; height: auto; border: none;">
-      </a>
+        <p style="margin-bottom: 6px">🛠️ Le projet est encore en évolution !</p>
+        <p style="margin-bottom: 12px">
+          Si tu rencontres un bug ou que tu as une idée d'amélioration, n'hésite
+          pas à m'écrire :
+        </p>
+
+        <div
+          style="
+            background: #f3e5c1;
+            padding: 10px 14px;
+            border-left: 5px solid #c2a76d;
+            border-radius: 6px;
+            margin-bottom: 16px;
+          "
+        >
+          <p style="margin: 0">
+            <strong>📬 Discord :</strong> <code>macloaww</code>
+          </p>
+        </div>
+
+        <button
+          class="btn primary-btn"
+          style="width: 100%"
+          onclick="closeWindow('welcome')"
+        >
+          🚀 Ok, je commence !
+        </button>
+        <div style="height: 50px"></div>
+      </div>
+      <div
+        class="resize-handle"
+        onmousedown="startResize(event, 'welcome')"
+      ></div>
     </div>
-
-    <!-- ✅ Ajout de la version -->
-    <div style="margin-top: 12px; text-align: right; font-size: 12px; opacity: 0.5;">
-      Version <strong>V1.1</strong>
-    </div>
-  </div>
-  <div class="resize-handle" onmousedown="startResize(event, 'settings')"></div>
-</div>
-
 
     <script src="script.js"></script>
   </body>
